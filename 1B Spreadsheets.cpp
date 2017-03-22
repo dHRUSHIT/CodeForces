@@ -1,55 +1,80 @@
+//1B. Spreadsheets
+
 #include<iostream>
 #include<cstdlib>
 #include<string.h>
+#include<algorithm>
 using namespace std;
+int N;
 
-enum mapping{ A = 0,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z
-};
-
-
-
-string excel2rxcy(char str[]){
-	cout<<"excel2rxcy\n";
+void rxcytoexcel(char str[20]){
+	char row[10]={'\0'},col[10]={'\0'};
+	
+	int i = 1;
+	for(int j=0;isdigit(str[i]);j++,i++)
+		row[j] = str[i];
+	i++;
+	for(int j=0;isdigit(str[i]) && i<strlen(str);i++,j++)
+		col[j] = str[i];
+	int numcols = atoi(col);
+	char output[20] = {'\0'};
+	int d=26,o_i=0;
+	// t is used to take care of the case when the numcols is divisible by 26
+	int t=0;
+	while(numcols>0){
+		if(numcols%26 == 0)
+			numcols--,t++;
+		output[o_i++] = char(numcols%26 + 64 + t);
+		if(t) t--;
+		numcols /= d;
+	}
+	int l = strlen(output);
+	while(l--)
+		cout<<output[l];
+	
+		
+	cout<<row<<endl;
 }
 
-string rxcy2excel(char str[]){
-	cout<<"rxcy2excel\n";
-	int col,row,i=1;
-	char colstr[10];
-	char rowstr[10];
+exceltorxcy(char str[20]){
+	char output[20];
+	int o_i=0;
+	int l = strlen(str);
+	while(!isdigit(str[o_i])) o_i++;
+	cout<<"R";
+	for(int i=o_i;i<l;i++) cout<<str[i];
+	cout<<"C";
+	int col = 0;
+	for(int i=o_i-1,d=1;i>=0;i--){
+		col += (str[i] - 'A' + 1)*d;
+		d*=26;
+	}
 	
-	for(int j=0;i<strlen(str) && isdigit(str[i]);i++,j++){
-		rowstr[j] = str[i];
-	}
-	row = atoi(rowstr);
-	i++;
-	
-	for(int j=0;i<strlen(str) && isdigit(str[i]);i++,j++){
-		colstr[j] = str[i];
-		
-	}
-	col = atoi(colstr);
-//	cout<<row<<" "<<col;
-	int t=0,del=1;
-	char ret[10]={'\0'};
-	while(col>0){
-		col
-	}
-	return "";
+	cout<<col<<endl;
 }
 
 int main(){
 	int T;
+	char input[20];
 	cin>>T;
 	
-	char input[10];
 	while(T--){
 		cin>>input;
 		
-		if(input[0] == 'R' && isdigit(input[1]))
-			cout<<rxcy2excel(input);
-		else
-			cout<<excel2rxcy(input);
+		// need to decide if the input is of form char digit char digit or  CA
+		// cant use the input[0] == 'R' && input[1] is digit for case R853
+		bool b = false;
+		int len = strlen(input);
+		int temp=0;
+		while(isalpha(input[temp])) temp++;
+		for(;!b & temp<len;temp++)
+			b |= isalpha(input[temp]);
+		
+		
+		if(b){
+			rxcytoexcel(input);
+		}else{
+			exceltorxcy(input);
+		}
 	}
 }
-
